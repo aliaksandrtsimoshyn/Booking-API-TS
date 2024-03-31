@@ -1,0 +1,45 @@
+name: allTests
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  URL: ${{ vars.URL }}
+  ADMINNAME: ${{ vars.ADMINNAME }}
+  ADMINPASSWORD: ${{ vars.ADMINPASSWORD }}
+  CUSTOMERNAME: ${{ vars.CUSTOMERNAME }}
+  CUSTOMERPASSWORD: ${{ vars.CUSTOMERPASSWORD }}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npm run allTests
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: playwright-report/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
