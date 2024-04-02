@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker { image 'node:16-alpine' } }
+    agent { docker { image 'mcr.microsoft.com/playwright:v1.39.0-jammy' } }
     
     stages {
         stage('Install playwright') {
