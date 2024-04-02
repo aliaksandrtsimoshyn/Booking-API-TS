@@ -22,7 +22,7 @@ pipeline {
         stage('test') {
             steps {
                 sh ''' 
-                npm run allTests   '''
+                npx run allTests   '''
             }
         }
     }
