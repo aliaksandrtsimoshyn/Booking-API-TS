@@ -21,7 +21,7 @@ pipeline {
         
         stage('test') {
             steps {
-                sh ''' npx playwright test --list
+                sh ''' 
                 npm run allTests   '''
             }
         }
