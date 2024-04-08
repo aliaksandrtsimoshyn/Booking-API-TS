@@ -18,15 +18,15 @@ test.beforeAll(async ({}) => {
 test.describe(`USERS`, () => {
   // Test data for Get User test
   const testData1 = [
-    { statusCode: 200, authRole: roles.admin },
-    { statusCode: 403, authRole: roles.customer },
+    { responseStatus: 200, authRole: roles.admin },
+    { responseStatus: 403, authRole: roles.customer },
   ]
 
   for (const data of testData1) {
     test(`Get User By ${data.authRole}`, async ({ userService, newCustomer }) => {
       const userData = await userService.getUser(
         newCustomer.user_id as string,
-        data.statusCode,
+        data.responseStatus,
         data.authRole
       )
 
@@ -39,30 +39,21 @@ test.describe(`USERS`, () => {
     })
   }
 
-  // Test data for Create User test
+  test(`Create User`, async ({ userService }) => {
+    const userData = await userService.createUser(roles.customer, 201)
+    console.log(`The user with user_id ${userData.user_id} is created:`, userData)
+
+    await userService.deleteUser(userData.user_id as string, 204)
+    console.log(`The user with user_id ${userData.user_id} is deleted`)
+  })
+
+  // Test data for Patch and Put User tests
   const testData2 = [
-    { statusCode: 201, authRole: roles.admin },
-    { statusCode: 201, authRole: roles.customer },
+    { responseStatus: 200, authRole: roles.admin },
+    { responseStatus: 403, authRole: roles.customer },
   ]
 
   for (const data of testData2) {
-    test(`Create User By ${data.authRole}`, async ({ userService }) => {
-      const userData = await userService.createUser(roles.customer, data.statusCode, data.authRole)
-      console.log(`The user with user_id ${userData.user_id} is created:`, userData)
-
-      await userService.deleteUser(userData.user_id as string, 204)
-      console.log(`The user with user_id ${userData.user_id} is deleted`)
-      
-    })
-  }
-
-  // Test data for Patch and Put User tests
-  const testData3 = [
-    { statusCode: 200, authRole: roles.admin },
-    { statusCode: 403, authRole: roles.customer },
-  ]
-
-  for (const data of testData3) {
     test(`User Partial Update By ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
         full_name: await createRandomString(2, 7),
@@ -72,7 +63,7 @@ test.describe(`USERS`, () => {
       const updatedUserData = await userService.patchUser(
         newCustomer.user_id as string,
         newData,
-        data.statusCode,
+        data.responseStatus,
         data.authRole
       )
 
@@ -85,7 +76,7 @@ test.describe(`USERS`, () => {
     })
   }
 
-  for (const data of testData3) {
+  for (const data of testData2) {
     test(`User Full Update by ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
         full_name: await createRandomString(2, 7),
@@ -99,7 +90,7 @@ test.describe(`USERS`, () => {
       const updatedUserData = await userService.putUser(
         newCustomer.user_id as string,
         newData,
-        data.statusCode,
+        data.responseStatus,
         data.authRole
       )
 

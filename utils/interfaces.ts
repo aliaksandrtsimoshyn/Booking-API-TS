@@ -11,11 +11,41 @@ export interface Flight {
   status: string
 }
 
+export interface Seats {
+  economy: [string]
+  comfort: [string]
+  business: [string]
+}
+
+export interface SpecificFlight {
+  flight_info: Flight
+  available_bookings_count: Seats
+}
+
 export interface Departure {
   city: string
   airport: string
   airport_name: string
   time: string
+}
+
+export interface Ticket {
+  ticket_no: string
+  amount: number
+  fare_conditions: string
+  passenger_name: string
+  phone: string
+  email: string
+}
+
+export interface Booking {
+  book_ref: string
+  scheduled_departure: string
+  departure_airport: string
+  scheduled_arrival: string
+  arrival_airport: string
+  tickets: [Ticket]
+  account_id: number
 }
 
 export interface User {

@@ -4,8 +4,8 @@ import { User } from '../interfaces'
 import { selectAuthorizedAPIContext, createRandomString } from './functions'
 
 export class UserService {
-  async createUser(role: string, statusCode: number, authRole = roles.admin) {
-    const context = await selectAuthorizedAPIContext(authRole)
+  async createUser(role: string, responseStatus: number) {
+    const context = await selectAuthorizedAPIContext()
 
     const createUser = await context.post(`${settings.baseURL}/users`, {
       data: {
@@ -17,54 +17,54 @@ export class UserService {
         password: await createRandomString(2, 11),
       },
     })
-    await expect(createUser.status(), `The user isn't created`).toBe(statusCode)
+    await expect(createUser.status(), `The user isn't created`).toBe(responseStatus)
 
     const userData = (await createUser.json()) as User
     
     return userData
   }
 
-  async getUser(userID: string, statusCode: number, authRole = roles.admin) {
+  async getUser(userID: string, responseStatus: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
 
     const getUser = await context.get(`${settings.baseURL}/users/${userID}`)
-    await expect(getUser.status(), `Get user request is failed`).toBe(statusCode)
+    await expect(getUser.status(), `Get user request is failed`).toBe(responseStatus)
 
     const userData = (await getUser.json()) as User
 
     return userData
   }
 
-  async patchUser(userID: string, newData: {}, statusCode: number, authRole = roles.admin) {
+  async patchUser(userID: string, newData: {}, responseStatus: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
 
     const patchUser = await context.patch(`${settings.baseURL}/users/${userID}`, {
       data: newData,
     })
-    await expect(patchUser.status(), `The user isn't updated`).toBe(statusCode)
+    await expect(patchUser.status(), `The user isn't updated`).toBe(responseStatus)
 
     const newUserData = (await patchUser.json()) as User
 
     return newUserData
   }
 
-  async putUser(userID: string, newData: {}, statusCode: number, authRole = roles.admin) {
+  async putUser(userID: string, newData: {}, responseStatus: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
 
     const putUser = await context.put(`${settings.baseURL}/users/${userID}`, {
       data: newData,
     })
-    await expect(putUser.status(), `The user isn't updated`).toBe(statusCode)
+    await expect(putUser.status(), `The user isn't updated`).toBe(responseStatus)
 
     const newUserData = (await putUser.json()) as User
 
     return newUserData
   }
 
-  async deleteUser(userID: string, statusCode: number, authRole = roles.admin) {
+  async deleteUser(userID: string, responseStatus: number, authRole = roles.admin) {
     const context = await selectAuthorizedAPIContext(authRole)
 
     const deleteUser = await context.delete(`${settings.baseURL}/users/${userID}`)
-    expect(deleteUser.status(), `The user isn't deleted`).toBe(statusCode)
+    expect(deleteUser.status(), `The user isn't deleted`).toBe(responseStatus)
   }
 }

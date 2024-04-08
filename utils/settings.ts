@@ -17,6 +17,21 @@ export const roles = {
   customer: 'customer'
 }
 
+export const flightStatuses = {
+  departed: 'Departed',
+  on_time: 'On Time',
+  delayed: 'Delayed',
+  arrived: 'Arrived',
+  scheduled: 'Scheduled',
+  cancelled: 'Cancelled'
+}
+
+export const fareConditions = {
+  economy: 'Economy',
+  comfort: 'Comfort',
+  business: 'Business'
+}
+
 export const settings: Settings = {
   baseURL: process.env.URL || '',
   adminAPIContext: null,
