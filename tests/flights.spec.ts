@@ -44,23 +44,28 @@ test.describe(`FLIGHTS`, () => {
   ]
 
   for (const data of testData1) {
-  test(`Book Tickets For ${data.flightStatus} Flight`, async ({ flightService, newCustomer }) => {
-    const requestData = {
-      account_id: newCustomer.user_id,
-      tickets: [
-        {
-          amount: 10,
-          fare_conditions: fareConditions.economy,
-          passenger_name: newCustomer.username,
-          phone: newCustomer.phone_number,
-          email: newCustomer.email,
-        },
-      ],
-    }
-    const bookTicketsData = await flightService.bookTickets(requestData, data.flightStatus, data.responseStatus)
+    test(`Book Tickets For ${data.flightStatus} Flight`, async ({ flightService, newCustomer }) => {
+      const requestData = {
+        account_id: newCustomer.user_id,
+        tickets: [
+          {
+            amount: 10,
+            fare_conditions: fareConditions.economy,
+            passenger_name: newCustomer.username,
+            phone: newCustomer.phone_number,
+            email: newCustomer.email,
+          },
+        ],
+      }
+      const bookTicketsData = await flightService.bookTickets(
+        requestData,
+        data.flightStatus,
+        data.responseStatus
+      )
 
-    console.log(`Booking data:`, bookTicketsData)
-  })}
+      console.log(`Booking data:`, bookTicketsData)
+    })
+  }
 
   // Test data for Get User Bookings test
   const testData2 = [
