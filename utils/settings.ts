@@ -27,9 +27,9 @@ export const flightStatuses = {
 }
 
 export const fareConditions = {
-  economy: 'Economy',
-  comfort: 'Comfort',
-  business: 'Business'
+  economy: 'economy',
+  comfort: 'comfort',
+  business: 'business'
 }
 
 export const settings: Settings = {

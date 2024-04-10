@@ -19,7 +19,11 @@ export interface Seats {
 
 export interface SpecificFlight {
   flight_info: Flight
-  available_bookings_count: Seats
+  available_bookings_count: {
+    economy: number
+    comfort: number
+    business: number
+  }
 }
 
 export interface Departure {
