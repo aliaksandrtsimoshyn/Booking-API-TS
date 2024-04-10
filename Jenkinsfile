@@ -22,8 +22,9 @@ pipeline {
                          'ADMINNAME=alex', 
                          'ADMINPASSWORD=7777777', 
                          'CUSTOMERNAME=alexcust', 
-                         'CUSTOMERPASSWORD=7777777'])
+                         'CUSTOMERPASSWORD=7777777']) {
                 sh 'npx playwright test'
+            }
             }
         }
     }
