@@ -16,7 +16,7 @@ export default defineConfig({
 
   workers: 5,
 
-  timeout: 40 * 1000,
+  timeout: 60 * 1000,
 
   expect: {
     timeout: 30 * 1000,

@@ -4,12 +4,12 @@ import { Booking, Flights, Seats, SpecificFlight } from '../interfaces'
 import { selectAuthorizedAPIContext } from './functions'
 
 export class FlightService {
-  async getFlights(flightStatus: string) {
+  async getFlights(flightStatus: string, limit = 5) {
     const context = await selectAuthorizedAPIContext()
 
     const flights = await context.get(`${settings.baseURL}/flights`, {
       params: {
-        limit: 5,
+        limit: limit,
         status: flightStatus,
       },
     })
@@ -28,7 +28,7 @@ export class FlightService {
   }
 
   async getFlightIDWithFreeSeats(fareCondition: string, flightStatus: string) {
-    const flightsData = await this.getFlights(flightStatus)
+    const flightsData = await this.getFlights(flightStatus, 50)
 
     for (const flight of flightsData) {
       const specificFlightData = await this.getSpecificFlight(flight.flight_id)
