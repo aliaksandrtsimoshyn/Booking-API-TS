@@ -12,24 +12,24 @@ type TestUsers = {
   customer: User
 }
 
-export const roles = {
-  admin: 'admin',
-  customer: 'customer'
+export enum roles {
+  admin = 'admin',
+  customer = 'customer'
 }
 
-export const flightStatuses = {
-  departed: 'Departed',
-  on_time: 'On Time',
-  delayed: 'Delayed',
-  arrived: 'Arrived',
-  scheduled: 'Scheduled',
-  cancelled: 'Cancelled'
+export enum flightStatuses {
+  departed = 'Departed',
+  on_time = 'On Time',
+  delayed = 'Delayed',
+  arrived = 'Arrived',
+  scheduled = 'Scheduled',
+  cancelled = 'Cancelled'
 }
 
-export const fareConditions = {
-  economy: 'economy',
-  comfort: 'comfort',
-  business: 'business'
+export enum fareConditions  {
+  economy = 'economy',
+  comfort = 'comfort',
+  business = 'business'
 }
 
 export const settings: Settings = {

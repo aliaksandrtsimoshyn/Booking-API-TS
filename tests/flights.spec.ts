@@ -37,9 +37,9 @@ test.describe(`FLIGHTS`, () => {
 
   // Test data for Book Tickets test (with different fare conditions)
   const testData1 = [
-    { fareConditions: fareConditions.economy, fare_conditions: 'Economy' },
-    { fareConditions: fareConditions.comfort, fare_conditions: 'Comfort' },
-    { fareConditions: fareConditions.business, fare_conditions: 'Business' },
+    { fareConditions: fareConditions.economy, fare_conditions: `Economy` },
+    { fareConditions: fareConditions.comfort , fare_conditions: `Comfort` },
+    { fareConditions: fareConditions.business, fare_conditions: `Business` },
   ]
 
   for (const data of testData1) {
