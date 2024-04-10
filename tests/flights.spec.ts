@@ -22,7 +22,7 @@ test.describe(`FLIGHTS`, () => {
   })
 
   test(`Get Specific Flight`, async ({ flightService }) => {
-    const flightID = await flightService.getFlightIDByStatus(flightStatuses.scheduled)
+    const flightID = await flightService.getFlightIDByStatus(flightStatuses.scheduled) 
     const specificFlightData = await flightService.getSpecificFlight(flightID)
 
     console.log(`The flight:`, specificFlightData)

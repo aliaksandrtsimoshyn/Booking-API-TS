@@ -30,43 +30,33 @@ export class FlightService {
   async getFlightIDWithFreeSeats(fareCondition: string, flightStatus: string) {
     const flightsData = await this.getFlights(flightStatus)
 
-    let flightID = 0
-
     for (const flight of flightsData) {
       const specificFlightData = await this.getSpecificFlight(flight.flight_id)
 
       if (specificFlightData.available_bookings_count[fareCondition] !== 0) {
-        flightID = flight.flight_id
+        const flightID = flight.flight_id
         return flightID
-      } else {
-        console.log(
-          `The flight with flight_id ${flight.flight_id} doesn't contain free ${fareCondition} seats`
-        )
       }
     }
-
-    return flightID
+    throw new Error(
+      `The flights don't contain free ${fareCondition} seats`
+    )
   }
 
   async getFlightIDWithoutFreeSeats(fareCondition: string, flightStatus: string) {
     const flightsData = await this.getFlights(flightStatus)
 
-    let flightID = 0
-
     for (const flight of flightsData) {
       const specificFlightData = await this.getSpecificFlight(flight.flight_id)
 
       if (specificFlightData.available_bookings_count[fareCondition] === 0) {
-        flightID = flight.flight_id
+        const flightID = flight.flight_id
         return flightID
-      } else {
-        console.log(
-          `The flight with flight_id ${flight.flight_id} contain free ${fareCondition} seats`
-        )
-      }
+      } 
     }
-
-    return flightID
+    throw new Error(
+      `All flights contain free ${fareCondition} seats`
+    )
   }
 
   async getSpecificFlight(flightID: number) {
