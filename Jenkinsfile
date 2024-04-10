@@ -18,6 +18,11 @@ pipeline {
         
         stage('Run Tests') {
             steps {
+                withEnv(['URL=https://bookings-api-667x.onrender.com', 
+                         'ADMINNAME=alex', 
+                         'ADMINPASSWORD=7777777', 
+                         'CUSTOMERNAME=alexcust', 
+                         'CUSTOMERPASSWORD=7777777'])
                 sh 'npx playwright test'
             }
         }
