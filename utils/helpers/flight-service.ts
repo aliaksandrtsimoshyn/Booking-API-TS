@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test'
-import { fareConditions, roles, settings } from '../settings'
+import { settings } from '../settings'
 import { Booking, Flights, Seats, SpecificFlight } from '../interfaces'
 import { selectAuthorizedAPIContext } from './functions'
+import { roles } from '../enums'
 
 export class FlightService {
   async getFlights(flightStatus: string, limit = 5) {
@@ -38,9 +39,7 @@ export class FlightService {
         return flightID
       }
     }
-    throw new Error(
-      `The flights don't contain free ${fareCondition} seats`
-    )
+    throw new Error(`The flights don't contain free ${fareCondition} seats`)
   }
 
   async getFlightIDWithoutFreeSeats(fareCondition: string, flightStatus: string) {
@@ -52,11 +51,9 @@ export class FlightService {
       if (specificFlightData.available_bookings_count[fareCondition] === 0) {
         const flightID = flight.flight_id
         return flightID
-      } 
+      }
     }
-    throw new Error(
-      `All flights contain free ${fareCondition} seats`
-    )
+    throw new Error(`All flights contain free ${fareCondition} seats`)
   }
 
   async getSpecificFlight(flightID: number) {

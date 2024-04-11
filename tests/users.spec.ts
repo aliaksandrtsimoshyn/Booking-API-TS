@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test'
-import { settings, testUsers, roles } from '../utils/settings'
+import { settings, testUsers } from '../utils/settings'
 import { test } from '../utils/fixtures'
 import { createAuthorizedAPIContext, createRandomString } from '../utils/helpers/functions'
+import { roles } from '../utils/enums'
 
 test.beforeAll(async ({}) => {
   settings.adminAPIContext = await createAuthorizedAPIContext(

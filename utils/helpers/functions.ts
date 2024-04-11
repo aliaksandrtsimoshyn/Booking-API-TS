@@ -1,5 +1,6 @@
 import { APIRequestContext, expect, request } from '@playwright/test'
-import { settings, roles } from '../settings'
+import { settings } from '../settings'
+import { roles } from '../enums'
 
 export async function createAuthorizedAPIContext(username: string, password: string) {
   const context = await request.newContext()

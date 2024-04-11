@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test'
-import { settings, roles } from '../settings'
+import { settings } from '../settings'
 import { User } from '../interfaces'
 import { selectAuthorizedAPIContext, createRandomString } from './functions'
+import { roles } from '../enums'
 
 export class UserService {
   async createUser(role: string, responseStatus: number) {
@@ -20,7 +21,7 @@ export class UserService {
     await expect(createUser.status(), `The user isn't created`).toBe(responseStatus)
 
     const userData = (await createUser.json()) as User
-    
+
     return userData
   }
 

@@ -1,6 +1,7 @@
-import { settings, testUsers, roles, flightStatuses, fareConditions } from '../utils/settings'
+import { settings, testUsers } from '../utils/settings'
 import { test } from '../utils/fixtures'
 import { createAuthorizedAPIContext } from '../utils/helpers/functions'
+import { fareConditions, flightStatuses, roles } from '../utils/enums'
 
 test.beforeAll(async ({}) => {
   settings.adminAPIContext = await createAuthorizedAPIContext(
@@ -22,7 +23,7 @@ test.describe(`FLIGHTS`, () => {
   })
 
   test(`Get Specific Flight`, async ({ flightService }) => {
-    const flightID = await flightService.getFlightIDByStatus(flightStatuses.scheduled) 
+    const flightID = await flightService.getFlightIDByStatus(flightStatuses.scheduled)
     const specificFlightData = await flightService.getSpecificFlight(flightID)
 
     console.log(`The flight:`, specificFlightData)
@@ -35,11 +36,12 @@ test.describe(`FLIGHTS`, () => {
     console.log(`Free seats:`, freeSeatsData)
   })
 
-  // Test data for Book Tickets test (with different fare conditions)
+  // Test data for Book Tickets test (with different fare conditions) and 
+  // Negative Book Tickets test (with unavailable free seats)
   const testData1 = [
-    { fareConditions: fareConditions.economy, fare_conditions: `Economy` },
-    { fareConditions: fareConditions.comfort , fare_conditions: `Comfort` },
-    { fareConditions: fareConditions.business, fare_conditions: `Business` },
+    { fareConditions: `economy`, fare_conditions: fareConditions.economy },
+    { fareConditions: `comfort`, fare_conditions: fareConditions.comfort },
+    { fareConditions: `business`, fare_conditions: fareConditions.business },
   ]
 
   for (const data of testData1) {
@@ -66,15 +68,8 @@ test.describe(`FLIGHTS`, () => {
       console.log(`Booking data:`, bookingData)
     })
   }
-
-  // Test data for Negative Book Tickets test (with unavailable free seats)
-  const testData2 = [
-    { fareConditions: fareConditions.economy, fare_conditions: 'Economy' },
-    { fareConditions: fareConditions.comfort, fare_conditions: 'Comfort' },
-    { fareConditions: fareConditions.business, fare_conditions: 'Business' },
-  ]
-
-  for (const data of testData2) {
+  
+  for (const data of testData1) {
     test(`Book Unavailable ${data.fare_conditions} Tickets`, async ({ flightService, newCustomer }) => {
       const flightID = await flightService.getFlightIDWithoutFreeSeats(
         data.fareConditions,
@@ -100,7 +95,7 @@ test.describe(`FLIGHTS`, () => {
   }
 
   // Test data for Negative Book Tickets test (with inappropriate flight statuses)
-  const testData3 = [
+  const testData2 = [
     { flightStatus: flightStatuses.arrived },
     { flightStatus: flightStatuses.cancelled },
     { flightStatus: flightStatuses.delayed },
@@ -108,7 +103,7 @@ test.describe(`FLIGHTS`, () => {
     { flightStatus: flightStatuses.on_time },
   ]
 
-  for (const data of testData3) {
+  for (const data of testData2) {
     test(`Book Tickets For ${data.flightStatus} Flight`, async ({ flightService, newCustomer }) => {
       const flightID = await flightService.getFlightIDWithFreeSeats(fareConditions.economy, data.flightStatus)
 
@@ -131,12 +126,12 @@ test.describe(`FLIGHTS`, () => {
   }
 
   // Test data for Get User Bookings test
-  const testData4 = [
+  const testData3 = [
     { responseStatus: 200, authRole: roles.admin },
     { responseStatus: 403, authRole: roles.customer },
   ]
 
-  for (const data of testData4) {
+  for (const data of testData3) {
     test(`Get User Bookings By ${data.authRole}`, async ({ flightService, newCustomer }) => {
       const bookingsData = await flightService.getUserBookings(
         newCustomer.user_id as string,

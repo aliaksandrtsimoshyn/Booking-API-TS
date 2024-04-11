@@ -1,5 +1,6 @@
 import { APIRequestContext } from '@playwright/test'
 import { User } from '../utils/interfaces'
+import { roles } from './enums'
 
 type Settings = {
   baseURL: string
@@ -12,30 +13,10 @@ type TestUsers = {
   customer: User
 }
 
-export enum roles {
-  admin = 'admin',
-  customer = 'customer'
-}
-
-export enum flightStatuses {
-  departed = 'Departed',
-  on_time = 'On Time',
-  delayed = 'Delayed',
-  arrived = 'Arrived',
-  scheduled = 'Scheduled',
-  cancelled = 'Cancelled'
-}
-
-export enum fareConditions  {
-  economy = 'economy',
-  comfort = 'comfort',
-  business = 'business'
-}
-
 export const settings: Settings = {
   baseURL: process.env.URL || '',
   adminAPIContext: null,
-  customerAPIContext: null
+  customerAPIContext: null,
 }
 
 export const testUsers: TestUsers = {
@@ -56,7 +37,7 @@ export const testUsers: TestUsers = {
     password: process.env.CUSTOMERPASSWORD || '',
     phone_number: '3333333',
     user_id: '593',
-  }
+  },
 }
 
 // {
@@ -68,7 +49,6 @@ export const testUsers: TestUsers = {
 //   "phone_number": "1111111",
 //   "user_id": 347
 // }
-
 
 // {
 //   "full_name": "ALEXCUST",

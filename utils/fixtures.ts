@@ -1,8 +1,8 @@
 import { test as base } from '@playwright/test'
-import { roles } from './settings'
 import { UserService } from './helpers/user-service'
 import { FlightService } from './helpers/flight-service'
 import { User } from './interfaces'
+import { roles } from './enums'
 
 type MyFixtures = {
   userService: UserService
