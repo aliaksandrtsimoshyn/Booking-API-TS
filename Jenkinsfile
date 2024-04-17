@@ -28,18 +28,19 @@ pipeline {
                     sh 'npx playwright test'
                 }
             }
+
             post {
-        always {
-            publishHTML(target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'HTML Report'
-            ])
-        }
-    }
+                always {
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'HTML Report'
+                    ])
+                }
+            }
         }
     }
 }
