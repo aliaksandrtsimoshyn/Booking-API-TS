@@ -90,15 +90,4 @@ export class FlightService {
 
     return bookingData
   }
-
-  async getUserBookings(userID: string, responseStatus: number, authRole = roles.admin) {
-    const context = await selectAuthorizedAPIContext(authRole)
-
-    const bookings = await context.get(`${settings.baseURL}/users/${userID}/bookings`)
-    await expect(bookings.status(), `Get user bookings request is failed`).toBe(responseStatus)
-
-    const bookingsData = await bookings.json()
-
-    return bookingsData
-  }
 }

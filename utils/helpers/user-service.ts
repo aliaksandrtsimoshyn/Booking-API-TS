@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { settings } from '../settings'
-import { User } from '../interfaces'
+import { User, UserBookings, UserTicket } from '../interfaces'
 import { selectAuthorizedAPIContext, createRandomString } from './functions'
 import { roles } from '../enums'
 
@@ -67,5 +67,34 @@ export class UserService {
 
     const deleteUser = await context.delete(`${settings.baseURL}/users/${userID}`)
     expect(deleteUser.status(), `The user isn't deleted`).toBe(responseStatus)
+  }
+
+  async getUserBookings(userID: string, responseStatus: number, authRole = roles.admin) {
+    const context = await selectAuthorizedAPIContext(authRole)
+
+    const userBookings = await context.get(`${settings.baseURL}/users/${userID}/bookings`)
+    await expect(userBookings.status(), `Get user bookings request is failed`).toBe(responseStatus)
+
+    const userBookingsData = await userBookings.json() as UserBookings
+
+    return userBookingsData.objects
+  }
+
+  async getUserTicket(userID: string, ticketNo: string, responseStatus: number, authRole = roles.admin) {
+    const context = await selectAuthorizedAPIContext(authRole)
+
+    const userTicket = await context.get(`${settings.baseURL}/users/${userID}/tickets/${ticketNo}`)
+    await expect(userTicket.status(), `Get user ticket request is failed`).toBe(responseStatus)
+
+    const userTicketData = (await userTicket.json()) as UserTicket
+
+    return userTicketData
+  }
+
+  async cancelUserTicket(userID: string, ticketNo: string, responseStatus: number, authRole = roles.admin) {
+    const context = await selectAuthorizedAPIContext(authRole)
+
+    const cancelUserTicket = await context.delete(`${settings.baseURL}/users/${userID}/tickets/${ticketNo}`)
+    await expect(cancelUserTicket.status(), `The ticket isn't canceled`).toBe(responseStatus)
   }
 }

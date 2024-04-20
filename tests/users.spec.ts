@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { settings, testUsers } from '../utils/settings'
 import { test } from '../utils/fixtures'
 import { createAuthorizedAPIContext, createRandomString } from '../utils/helpers/functions'
-import { roles } from '../utils/enums'
+import { fareConditions, flightStatuses, roles } from '../utils/enums'
 
 test.beforeAll(async ({}) => {
   settings.adminAPIContext = await createAuthorizedAPIContext(
@@ -17,7 +17,7 @@ test.beforeAll(async ({}) => {
 })
 
 test.describe(`USERS`, () => {
-  // Test data for Get User test
+  // Test data for Get User, Patch User, Put User, Get User Bookings tests
   const testData1 = [
     { responseStatus: 200, authRole: roles.admin },
     { responseStatus: 403, authRole: roles.customer },
@@ -48,13 +48,7 @@ test.describe(`USERS`, () => {
     console.log(`The user with user_id ${userData.user_id} is deleted`)
   })
 
-  // Test data for Patch and Put User tests
-  const testData2 = [
-    { responseStatus: 200, authRole: roles.admin },
-    { responseStatus: 403, authRole: roles.customer },
-  ]
-
-  for (const data of testData2) {
+  for (const data of testData1) {
     test(`User Partial Update By ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
         full_name: await createRandomString(2, 7),
@@ -77,7 +71,7 @@ test.describe(`USERS`, () => {
     })
   }
 
-  for (const data of testData2) {
+  for (const data of testData1) {
     test(`User Full Update by ${data.authRole}`, async ({ userService, newCustomer }) => {
       const newData = {
         full_name: await createRandomString(2, 7),
@@ -120,4 +114,119 @@ test.describe(`USERS`, () => {
     await userService.deleteUser(newCustomer.user_id as string, 403, roles.customer)
     console.log(`Delete user request is forbidden for customer`)
   })
+
+  for (const data of testData1) {
+    test(`Get User Bookings By ${data.authRole}`, async ({ flightService, userService, newCustomer }) => {
+      const flightID = await flightService.getFlightIDWithFreeSeats(
+        'economy',
+        flightStatuses.scheduled
+      )
+
+      const requestData = {
+        account_id: newCustomer.user_id,
+        tickets: [
+          {
+            amount: 1,
+            fare_conditions: fareConditions.economy,
+            passenger_name: newCustomer.username,
+            phone: newCustomer.phone_number,
+            email: newCustomer.email,
+          },
+        ],
+      }
+      await flightService.bookTickets(flightID, requestData, 201)
+
+      const bookingsData = await userService.getUserBookings(
+        newCustomer.user_id as string,
+        data.responseStatus,
+        data.authRole
+      )
+
+      if (data.authRole === roles.admin) {
+        console.log(`Bookings of the user with user_id ${newCustomer.user_id}:`, bookingsData)
+      } else if (data.authRole === roles.customer) {
+        console.log(`Get user bookings request is forbidden for ${roles.customer}`)
+      }
+    })
+  }
+
+  for (const data of testData1) {
+    test(`Get User Ticket By ${data.authRole}`, async ({ flightService, userService, newCustomer }) => {
+      const flightID = await flightService.getFlightIDWithFreeSeats(
+        'economy',
+        flightStatuses.scheduled
+      )
+
+      const requestData = {
+        account_id: newCustomer.user_id,
+        tickets: [
+          {
+            amount: 1,
+            fare_conditions: fareConditions.economy,
+            passenger_name: newCustomer.username,
+            phone: newCustomer.phone_number,
+            email: newCustomer.email,
+          },
+        ],
+      }
+      const bookingData = await flightService.bookTickets(flightID, requestData, 201)
+      const ticketNo = bookingData.tickets[0].ticket_no
+
+      const userTicketData = await userService.getUserTicket(
+        newCustomer.user_id as string,
+        ticketNo,
+        data.responseStatus,
+        data.authRole
+      )
+
+      if (data.authRole === roles.admin) {
+        console.log(`Ticket of the user with user_id ${newCustomer.user_id}:`, userTicketData)
+      } else if (data.authRole === roles.customer) {
+        console.log(`Get user ticket request is forbidden for ${roles.customer}`)
+      }
+    })
+  }
+
+  // Test data for Cancel User Ticket test
+  const testData2 = [
+    { responseStatus: 204, authRole: roles.admin },
+    { responseStatus: 403, authRole: roles.customer },
+  ]
+
+  for (const data of testData2) {
+    test(`Cancel User Ticket By ${data.authRole}`, async ({ flightService, userService, newCustomer }) => {
+      const flightID = await flightService.getFlightIDWithFreeSeats(
+        'economy',
+        flightStatuses.scheduled
+      )
+
+      const requestData = {
+        account_id: newCustomer.user_id,
+        tickets: [
+          {
+            amount: 1,
+            fare_conditions: fareConditions.economy,
+            passenger_name: newCustomer.username,
+            phone: newCustomer.phone_number,
+            email: newCustomer.email,
+          },
+        ],
+      }
+      const bookingData = await flightService.bookTickets(flightID, requestData, 201)
+      const ticketNo = bookingData.tickets[0].ticket_no
+
+      const cancelUserTicket = await userService.cancelUserTicket(
+        newCustomer.user_id as string,
+        ticketNo,
+        data.responseStatus,
+        data.authRole
+      )
+
+      if (data.authRole === roles.admin) {
+        console.log(`Ticket with ticketNo ${ticketNo} is canceled`, cancelUserTicket)
+      } else if (data.authRole === roles.customer) {
+        console.log(`Cancel user ticket request is forbidden for ${roles.customer}`)
+      }
+    })
+  }
 })

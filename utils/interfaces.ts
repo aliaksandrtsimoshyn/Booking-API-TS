@@ -1,5 +1,8 @@
-export interface Flights {
-  objects: [Flight]
+export interface Departure {
+  city: string
+  airport: string
+  airport_name: string
+  time: string
 }
 
 export interface Flight {
@@ -11,10 +14,8 @@ export interface Flight {
   status: string
 }
 
-export interface Seats {
-  economy: [string]
-  comfort: [string]
-  business: [string]
+export interface Flights {
+  objects: [Flight]
 }
 
 export interface SpecificFlight {
@@ -26,11 +27,20 @@ export interface SpecificFlight {
   }
 }
 
-export interface Departure {
-  city: string
-  airport: string
-  airport_name: string
-  time: string
+export interface User {
+  full_name: string
+  email: string
+  role: string
+  username: string
+  password?: string
+  phone_number: string
+  user_id?: string
+}
+
+export interface Seats {
+  economy: [string]
+  comfort: [string]
+  business: [string]
 }
 
 export interface Ticket {
@@ -52,12 +62,26 @@ export interface Booking {
   account_id: number
 }
 
-export interface User {
-  full_name: string
-  email: string
-  role: string
-  username: string
-  password?: string
-  phone_number: string
-  user_id?: string
+export interface UserBooking {
+  book_ref: string
+  ticket_numbers: [string]
+  book_date: string
+}
+
+export interface UserBookings {
+  objects: [UserBooking]
+}
+
+export interface UserTicket {
+  book_ref: string
+  passenger_name: string
+  contact_data: {
+    email: string
+    phone: string
+  };
+  fare_condition: string
+  scheduled_departure: string
+  departure_airport: string
+  scheduled_arrival: string
+  arrival_airport: string
 }
