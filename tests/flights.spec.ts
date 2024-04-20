@@ -1,7 +1,7 @@
 import { settings, testUsers } from '../utils/settings'
 import { test } from '../utils/fixtures'
 import { createAuthorizedAPIContext } from '../utils/helpers/functions'
-import { fareConditions, flightStatuses, roles } from '../utils/enums'
+import { fareConditions, flightStatuses } from '../utils/enums'
 
 test.beforeAll(async ({}) => {
   settings.adminAPIContext = await createAuthorizedAPIContext(

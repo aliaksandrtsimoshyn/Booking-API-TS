@@ -116,34 +116,15 @@ test.describe(`USERS`, () => {
   })
 
   for (const data of testData1) {
-    test(`Get User Bookings By ${data.authRole}`, async ({ flightService, userService, newCustomer }) => {
-      const flightID = await flightService.getFlightIDWithFreeSeats(
-        'economy',
-        flightStatuses.scheduled
-      )
-
-      const requestData = {
-        account_id: newCustomer.user_id,
-        tickets: [
-          {
-            amount: 1,
-            fare_conditions: fareConditions.economy,
-            passenger_name: newCustomer.username,
-            phone: newCustomer.phone_number,
-            email: newCustomer.email,
-          },
-        ],
-      }
-      await flightService.bookTickets(flightID, requestData, 201)
-
+    test(`Get User Bookings By ${data.authRole}`, async ({ userService, newCustomerWithTicket }) => {
       const bookingsData = await userService.getUserBookings(
-        newCustomer.user_id as string,
+        newCustomerWithTicket.user_id as string,
         data.responseStatus,
         data.authRole
       )
 
       if (data.authRole === roles.admin) {
-        console.log(`Bookings of the user with user_id ${newCustomer.user_id}:`, bookingsData)
+        console.log(`Bookings of the user with user_id ${newCustomerWithTicket.user_id}:`, bookingsData)
       } else if (data.authRole === roles.customer) {
         console.log(`Get user bookings request is forbidden for ${roles.customer}`)
       }
@@ -151,36 +132,19 @@ test.describe(`USERS`, () => {
   }
 
   for (const data of testData1) {
-    test(`Get User Ticket By ${data.authRole}`, async ({ flightService, userService, newCustomer }) => {
-      const flightID = await flightService.getFlightIDWithFreeSeats(
-        'economy',
-        flightStatuses.scheduled
-      )
-
-      const requestData = {
-        account_id: newCustomer.user_id,
-        tickets: [
-          {
-            amount: 1,
-            fare_conditions: fareConditions.economy,
-            passenger_name: newCustomer.username,
-            phone: newCustomer.phone_number,
-            email: newCustomer.email,
-          },
-        ],
-      }
-      const bookingData = await flightService.bookTickets(flightID, requestData, 201)
-      const ticketNo = bookingData.tickets[0].ticket_no
+    test(`Get User Ticket By ${data.authRole}`, async ({ userService, newCustomerWithTicket }) => {
+      const bookingsData = await userService.getUserBookings(newCustomerWithTicket.user_id as string, 200)
+      const ticketNo = bookingsData[0].ticket_numbers[0]
 
       const userTicketData = await userService.getUserTicket(
-        newCustomer.user_id as string,
+        newCustomerWithTicket.user_id as string,
         ticketNo,
         data.responseStatus,
         data.authRole
       )
 
       if (data.authRole === roles.admin) {
-        console.log(`Ticket of the user with user_id ${newCustomer.user_id}:`, userTicketData)
+        console.log(`Ticket of the user with user_id ${newCustomerWithTicket.user_id}:`, userTicketData)
       } else if (data.authRole === roles.customer) {
         console.log(`Get user ticket request is forbidden for ${roles.customer}`)
       }
@@ -194,29 +158,12 @@ test.describe(`USERS`, () => {
   ]
 
   for (const data of testData2) {
-    test(`Cancel User Ticket By ${data.authRole}`, async ({ flightService, userService, newCustomer }) => {
-      const flightID = await flightService.getFlightIDWithFreeSeats(
-        'economy',
-        flightStatuses.scheduled
-      )
-
-      const requestData = {
-        account_id: newCustomer.user_id,
-        tickets: [
-          {
-            amount: 1,
-            fare_conditions: fareConditions.economy,
-            passenger_name: newCustomer.username,
-            phone: newCustomer.phone_number,
-            email: newCustomer.email,
-          },
-        ],
-      }
-      const bookingData = await flightService.bookTickets(flightID, requestData, 201)
-      const ticketNo = bookingData.tickets[0].ticket_no
+    test(`Cancel User Ticket By ${data.authRole}`, async ({ userService, newCustomerWithTicket }) => {
+      const bookingsData = await userService.getUserBookings(newCustomerWithTicket.user_id as string, 200)
+      const ticketNo = bookingsData[0].ticket_numbers[0]
 
       const cancelUserTicket = await userService.cancelUserTicket(
-        newCustomer.user_id as string,
+        newCustomerWithTicket.user_id as string,
         ticketNo,
         data.responseStatus,
         data.authRole
